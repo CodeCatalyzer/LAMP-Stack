@@ -10,4 +10,5 @@ If done right, you will now see the following when you go to localhost in your b
 To start off the tutorial, go to your file explorer and create a folder.
 In this folder you will want to add an index.php and a Dockerfile. (The 'D' in Dockerfile has to be Capitalized)
 
-Inside the index.php file you will add the following code: ![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/5d172c4b-a469-44e8-8055-200202c3e11b)
+Inside the index.php file you will add the following code: 
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/5d172c4b-a469-44e8-8055-200202c3e11b)
