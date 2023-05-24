@@ -107,7 +107,7 @@ to use DBMS like MariaDB. To check if mySQL works, add the following code to `in
 ```php
 <?php
 $servername = "aServer";
-$username = "aUser";
+$username = "root";
 $password = "aPassword";
 $database = "aDatabase";
 
@@ -167,14 +167,21 @@ docker system prune
 # -d(detached) -->  will make the container run in the background without showings its output
 docker network create -d bridge aNetwork
 ```
+
+Instead of having to add -e variables to your run command you can just add them in your MySQL dockerfile:
+```php
+FROM mysql:8.0
+
+ENV MYSQL_ROOT_PASSWORD=aPassword
+ENV MYSQL_DATABASE=aDatabase
+```
+
 Now run the php and database images again, but add the network to it: 
 
 ```php
-docker run --network aNetwork --name aServer -e MYSQL_ROOT_PASSWORD=aPassword database
-docker run -v --network aNetwork ${PWD}:/var/www/html example-app
+docker run --network aNetwork --name aServer -p 3306:3306 database
+docker run --network aNetwork -v ${PWD}:/var/www/html example-app
 ```
-
-
-
+Now you will get `Connected succesfully`
 
 
