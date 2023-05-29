@@ -184,4 +184,14 @@ docker run --network aNetwork -v ${PWD}:/var/www/html example-app
 ```
 Now you will get `Connected succesfully`
 
+# Laravel application via Docker
+
+To run a laravel application in Docker you will need the following things, php, mysql, node and composer, as laravel needs you to do the npm install and composer install commands to work. Inside your folder create a new laravel project. 
+
+## Node and Composer
+
+Installing node and composer is very easy to do. Just like we did with the mysql dockerfile, create a folder named the way you want. I named my folders composer and node. Inside the folders create a new Dockerfile.
+
+
+
 
