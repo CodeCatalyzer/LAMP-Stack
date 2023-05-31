@@ -264,3 +264,7 @@ docker run --name myapp --network myNetwork -d -p 8080:80 -v ${PWD}/src/:/var/ww
 docker run --name mycomposer -d -v ${PWD}/src/:/var/app/ mycomposer
 docker run --name mynode -d -v ${PWD}/src/:/var/app/ mynode
 ```
+
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/7d232f1e-0271-4be0-87d4-5d8a54ee058a)
+
+# Your laravel application is ready to go!
