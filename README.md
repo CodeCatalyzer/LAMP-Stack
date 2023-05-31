@@ -40,14 +40,14 @@ Now you can run the following command in your terminal to see if it works:
 # -t (name) --> tags the image with a name (here we used example-app)
 # ./ --> builds the image from all of the files in this directory
 
-docker build -t example-app ./
+docker build -t myapp ./
 
 
 # Docker --> runs the docker binary
 # run --> creates a container from an image and runs the container ~ -p --> Publish a container’s port(s) to the host ~ 8080:80 --> the port where the site will be hosted
-# name (example-app) --> use the image named example-app 
+# name (myapp) --> use the image named myapp
 
-docker run -p 8080:80 example-app
+docker run -p 8080:80 myapp
 ```
 
 Now you will be able to see the following when visiting localhost:8080:  
@@ -74,13 +74,13 @@ In your `Dockerfile` remove the `COPY` line.
 You can now run a new container with the following commands: 
 
 ```php
-docker build -t example-app ./
+docker build -t myapp ./
 
 # -v --> bind mount a volume
 # ${PWD}:/var/www/html --> sync the current directory with /var/www/html
-# example-app --> use the image named 'example-app'
+# myapp --> use the image named 'myapp'
 
-docker run -p 8080:80 -v ${PWD}:/var/www/html example-app
+docker run -p 8080:80 -v ${PWD}:/var/www/html myapp
 ```
 
 ## Way 2: Without Dockerfile
@@ -88,7 +88,7 @@ This way is easy if you only want to run php in your application
 Just add the following command to your terminal: 
 
 ```php
-docker build -t example-app ./
+docker build -t myapp ./
 
 # -v --> bind mount a volume
 # ${PWD}:/var/www/html --> sync the current directory with /var/www/html
@@ -137,8 +137,8 @@ RUN docker-php-ext-install pdo pdo_mysql
 
 Now we can `build` the images with the following commands: 
 ```php
-docker build -t example-app ./
-docker build -t database ./database
+docker build -t myapp ./
+docker build -t mydatabase ./database
 ```
 And now `run` the images:
 ```php
@@ -146,8 +146,8 @@ And now `run` the images:
 # -e MYSQL_ROOT_PASSWORD=aPassword --> sets the variable value of MYSQL_ROOT_PASSWORD to aPassword
 # database --> name of the image
 
-docker run --name aServer -e MYSQL_ROOT_PASSWORD=aPassword database
-docker run -p 8080:80 -v ${PWD}:/var/www/html example-app
+docker run --name mydatabase -e MYSQL_ROOT_PASSWORD=aPassword mydatabase
+docker run -p 8080:80 -v ${PWD}:/var/www/html myapp
 ```
 If everything is done correctly, refreshing your browser will give the following error code:  
 ![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/e260d8bb-abc6-4fb9-b2c5-841664670e89)  
@@ -179,8 +179,8 @@ ENV MYSQL_DATABASE=aDatabase
 Now run the php and database images again, but add the network to it: 
 
 ```php
-docker run --network aNetwork --name aServer -p 3306:3306 database
-docker run --network aNetwork -v ${PWD}:/var/www/html example-app
+docker run --network myNetwork --name mydatabase -p 3306:3306 mydatabase
+docker run --network myNetwork -v ${PWD}:/var/www/html myapp
 ```
 Now you will get `Connected succesfully`
 
@@ -192,6 +192,75 @@ To run a laravel application in Docker you will need the following things, php, 
 
 Installing node and composer is very easy to do. Just like we did with the mysql dockerfile, create a folder named the way you want. I named my folders composer and node. Inside the folders create a new Dockerfile.
 
+Inside the composer Dockerfile type the following: 
 
+```php
+# Uses the latest composer image
+FROM composer:latest
+# This is the work directory where the application code gets stored
+WORKDIR /var/app
+# Executes the composer install command
+CMD ["composer",  "install"]
+```
 
+Inside the node Docker file type the following:
 
+```php
+# Uses node:20-alpine image
+FROM node:20-alpine
+
+WORKDIR /var/app/
+# Execute the command npm install
+CMD [ "npm", "install" ]
+```
+
+The extra build and run commands will be:
+```php
+docker build -t mycomposer ./composer
+docker build -t mynode ./node
+
+docker run --name mycomposer -d -v ${PWD}/src/:/var/app/ mycomposer
+docker run --name mynode -d -v ${PWD}/src/:/var/app/ myNode
+```
+
+Running all the build and run command will not do the trick yet. If we run this the program will have a couple problems. 
+
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/6d26f257-bedf-4a38-af23-2bba0e7731a6)
+In this picture you see that the normal route, the / route, only works when you add /public to the URL. To fix this problem we have to adjust some things in 
+the config. It's hard for me to explain what actually happends here, because it's hard for me to understand. To have this problem fixed, your php dockerfile will have to look like this:
+
+```php
+FROM php:8.2-apache
+
+RUN docker-php-ext-install pdo pdo_mysql
+# Sets the document root to the public folder in your laravel application
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+
+#These RUN commands modify the Apache configuration files in the Docker image to dynamically replace certain file path references with the value of the ${APACHE_DOCUMENT_ROOT} environment variable.
+
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+RUN a2enmod rewrite
+
+WORKDIR /var/www/html/
+```
+
+Et Voilà, you are done! This are the commands i run now to run my laravel application:
+```php
+# Build the images
+docker build -t myapp ./
+docker build -t mydatabase ./database
+docker build -t mycomposer ./composer
+docker build -t mynode ./node
+
+# Create the network
+docker network create -d bridge myNetwork
+
+# Run the containers
+docker run --name mydatabase --network myNetwork -d -v ${PWD}/data/:/var/lib/mysql/ mydatabase
+docker run --name myapp --network myNetwork -d -p 8080:80 -v ${PWD}/src/:/var/www/html/ myapp
+docker run --name mycomposer -d -v ${PWD}/src/:/var/app/ mycomposer
+docker run --name mynode -d -v ${PWD}/src/:/var/app/ mynode
+```
