@@ -63,7 +63,7 @@ To see change in your browser, you will have to stop the container in the docker
 ![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/2aa165c6-0a49-4060-a73b-e4d3adf0c9c7)  
 
 ## Volumes 
-A Docker volume is like a special storage place for containers. It keeps important data safe even if the containers are turned off or taken away. You can easily share this data between different containers or even on different computers. It helps make sure everything works smoothly and keeps your information organized. 
+A Docker volume is like a special storage place for containers. It keeps important data safe even if the containers are turned off or taken away You can easily share this data between different containers or even on different computers. It helps make sure everything works smoothly and keeps your information organized. 
 There is more information about bind mounts on the following website: https://docs.docker.com/storage/bind-mounts/
 
 There are multiple ways to sync the container with your folders.  
