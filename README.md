@@ -51,7 +51,8 @@ docker run -p 8080:80 myapp
 ```
 
 Now you will be able to see the following when visiting localhost:8080:  
-![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/7a0a99ca-ce1e-482e-9947-19d57dc19675)  
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/73f84b72-489e-4619-9e6b-f58a0aef4306)
+
 
 Now you can start your new awesome programs using PHP!  
 .  
