@@ -272,5 +272,29 @@ docker run --name mynode -d -v ${PWD}/src/:/var/app/ mynode
 ```
 ![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/96dc8577-e18a-4b8f-b884-85890cc789d1)
 
+## Connecting database to Laravel project
+Next up we have to connect the database to the laravel project. We will do this by changing the .ENV file in the laravel folder.
+Running the command php artisan migrate in your docker terminal will now give you the following error code:
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/a894621d-f67c-4d7a-8cbf-84c123288d67)
+
+We have to change the .env file:
+```php
+DB_CONNECTION=mysql
+DB_HOST=aServer
+DB_PORT=3306
+DB_DATABASE=aDatabase
+DB_USERNAME=root
+DB_PASSWORD=aPassword
+```
+Doing the same command in the terminal will now work!
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/21bc8b93-b587-43ac-91fc-a1cdb67d8051)
+
+We can now aswell connect to the database with tableplus:
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/f03d5814-f0e7-495d-95fa-f3f654bc1d41)
+
+You can now create CRUD pages like you are used to:
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/26963bf2-81a2-4817-9433-2e87378d0479)
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/b31193f6-d74a-4876-aec9-74f4cba2eedd)
+
 
 # Your laravel application is ready to go!
