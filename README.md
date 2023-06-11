@@ -233,16 +233,14 @@ docker run --name mynode -d -v ${PWD}/src/:/var/app/ myNode
 
 Running all the build and run command will not do the trick yet. If we run this the program will have a couple problems. 
 
-![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/6d26f257-bedf-4a38-af23-2bba0e7731a6)
-In this picture you see that the normal route, the / route, only works when you add /public to the URL. To fix this problem we have to adjust some things in 
-the config. It's hard for me to explain what actually happends here, because it's hard for me to understand. To have this problem fixed, your php dockerfile will have to look like this:
+Because this time the index.php file is not directly in the root folder, but inside the public folder of our project we have to make some tweaks to the program. This is what the changed dockerfile will look like: 
 
 ```php
 FROM php:8.2-apache
 
 RUN docker-php-ext-install pdo pdo_mysql
 # Sets the document root to the public folder in your laravel application
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/(projectfolder)/public
 
 #These RUN commands modify the Apache configuration files in the Docker image to dynamically replace certain file path references with the value of the ${APACHE_DOCUMENT_ROOT} environment variable.
 
@@ -272,7 +270,7 @@ docker run --name myapp --network myNetwork -d -p 8080:80 -v ${PWD}/src/:/var/ww
 docker run --name mycomposer -d -v ${PWD}/src/:/var/app/ mycomposer
 docker run --name mynode -d -v ${PWD}/src/:/var/app/ mynode
 ```
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/96dc8577-e18a-4b8f-b884-85890cc789d1)
 
-![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/7d232f1e-0271-4be0-87d4-5d8a54ee058a)
 
 # Your laravel application is ready to go!
