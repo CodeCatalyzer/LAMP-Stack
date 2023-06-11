@@ -61,7 +61,8 @@ Just kidding.. When you change something in your php script, you will see that t
 
 To see change in your browser, you will have to stop the container in the docker desktop and afterwards execute the `docker build` and `docker run` commands again.  
 
-![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/2aa165c6-0a49-4060-a73b-e4d3adf0c9c7)  
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/aa5e927a-6450-441e-9794-974e9c04da1a)
+
 
 ## Volumes 
 A Docker volume is like a special storage place for containers. It keeps important data safe even if the containers are turned off or taken away You can easily share this data between different containers or even on different computers. It helps make sure everything works smoothly and keeps your information organized. 
@@ -99,7 +100,7 @@ docker run -v ${PWD}:/var/www/html php:apache
 ```
 
 If you did it right, the code you add to your php file will automatically update when you refresh your browser:  
-![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/4d2a593b-1153-4fef-b7c4-c4865dea4d34)  
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/e7527485-a930-4994-882f-19a7df615fe5)
 
 # MySQL
 
@@ -115,6 +116,7 @@ $database = "aDatabase";
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Connected successfully";
 } catch(PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
 }
@@ -151,7 +153,8 @@ docker run --name mydatabase -e MYSQL_ROOT_PASSWORD=aPassword mydatabase
 docker run -p 8080:80 -v ${PWD}:/var/www/html myapp
 ```
 If everything is done correctly, refreshing your browser will give the following error code:  
-![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/e260d8bb-abc6-4fb9-b2c5-841664670e89)  
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/ade5ad44-d619-4d48-b827-d4b66246d006)
+
 This is pretty logical. We did in fact install the mysql extension to PHP but the database image and php image are not linked together.
 They are now just 2 seperate images being run in different containers. To fix this we will introduce networks
 
@@ -180,10 +183,14 @@ ENV MYSQL_DATABASE=aDatabase
 Now run the php and database images again, but add the network to it: 
 
 ```php
-docker run --network myNetwork --name mydatabase -p 3306:3306 mydatabase
-docker run --network myNetwork -v ${PWD}:/var/www/html myapp
+docker build -t mydatabase ./database
+docker run --network myNetwork --name aServer -p 3306:3306 mydatabase
+docker run --network myNetwork -p 8080:80 -v ${PWD}:/var/www/html myapp
 ```
 Now you will get `Connected succesfully`
+
+![afbeelding](https://github.com/CodeCatalyzer/LAMP-Stack/assets/112801788/e12cddd1-0923-47a6-8d2f-232b1375f6cb)
+
 
 # Laravel application via Docker
 
